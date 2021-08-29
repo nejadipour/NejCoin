@@ -1,8 +1,9 @@
 import json
+import sys
 from hashlib import sha256
 from time import time
 from uuid import uuid4
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 
 class BlockChain:
@@ -47,7 +48,7 @@ class BlockChain:
     @property
     def last_block(self):
         """returns the last block"""
-        pass
+        return self.chain[-1]
 
     @staticmethod
     def valid_proof(nonce, block):
@@ -80,10 +81,19 @@ def mine():
     return "I will mine a block soon!"
 
 
-@app.route('trxs/mine', methods=['POST'])
+@app.route('/trxs/new', methods=['POST'])
 def new_trx():
     """by calling this function, a new trx will be added"""
-    return "new trx added"
+    passed_data = request.get_json()
+    this_block = blockchain.new_trx(
+        passed_data["sender"],
+        passed_data["recipient"],
+        passed_data["amount"]
+    )
+
+    response = {'message': f'will be added to block {this_block}'}
+
+    return jsonify(response), 201
 
 
 @app.route('/chain')
@@ -94,3 +104,7 @@ def get_full_chain():
     }
 
     return jsonify(output), 200
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=int(sys.argv[1]))
