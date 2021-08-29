@@ -1,6 +1,8 @@
 import json
 from hashlib import sha256
 from time import time
+from uuid import uuid4
+from flask import Flask, jsonify
 
 
 class BlockChain:
@@ -65,3 +67,30 @@ class BlockChain:
             nonce += 1
 
         return nonce
+
+
+app = Flask(__name__)
+node_id = str(uuid4())
+blockchain = BlockChain()
+
+
+@app.route('/mine')
+def mine():
+    """mine a block and after that add it to the blockchain"""
+    return "I will mine a block soon!"
+
+
+@app.route('trxs/mine', methods=['POST'])
+def new_trx():
+    """by calling this function, a new trx will be added"""
+    return "new trx added"
+
+
+@app.route('/chain')
+def get_full_chain():
+    output = {
+        'chain': blockchain.chain,
+        'length': len(blockchain.chain)
+    }
+
+    return jsonify(output), 200
