@@ -3,12 +3,15 @@ import sys
 from hashlib import sha256
 from time import time
 from uuid import uuid4
+import requests as requests
 from flask import Flask, jsonify, request
+from urllib.parse import urlparse
 
 
 class BlockChain:
     def __init__(self):
         self.chain = []
+        self.nodes = set()
         self.current_trxs = []
         self.new_block(100, 1)
 
@@ -44,6 +47,54 @@ class BlockChain:
         """hash the block"""
         block_string = json.dumps(block, sort_keys=True).encode()
         return sha256(block_string).hexdigest()
+
+    def register_node(self, address):
+        parsed_url = urlparse(address)
+        self.nodes.add(parsed_url.netloc)
+
+    def valid_chain(self, chain):
+        """checks the validity of the chain"""
+        index = 0
+        while index < len(chain) - 1:
+            the_block_before = chain[index]
+            current_block = chain[index + 1]
+
+            if self.hash(the_block_before) != current_block['previous_hash']:
+                return False
+
+            if not self.valid_proof(the_block_before['proof'], the_block_before):
+                return False
+
+            index += 1
+
+        last_block = chain[-1]
+        if not self.valid_proof(last_block['proof'], last_block):
+            return False
+
+        return True
+
+    def resolve_conflicts(self):
+        """checks all the nodes to find the best chain
+        the chain that is longer than others, and also is valid,
+        will be the best one"""
+        neighbours = self.nodes
+        max_length = len(self.chain)
+        new_chain = None
+
+        for node in neighbours:
+            response = requests.get(f'http://{node}/chain')
+            if response.status_code == 200:
+                length = response.json()['length']
+                chain = response.json()['chain']
+                if length > max_length and self.valid_chain(chain):
+                    max_length = length
+                    new_chain = chain
+
+        if new_chain:
+            self.chain = new_chain
+            return True
+
+        return False
 
     @property
     def last_block(self):
