@@ -1,0 +1,289 @@
+{
+	"info": {
+		"_postman_id": "13daca93-ddb2-45a4-86a1-5a9194579d84",
+		"name": "NejCoin",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "port:6000",
+			"item": [
+				{
+					"name": "/chain",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/chain",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"chain"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/trxs/new",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"sender\": \"alireza\", \r\n    \"recipient\": \"mahdi\",\r\n    \"amount\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6000/trxs/new",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"trxs",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/mine",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"sender\": \"alireza\", \r\n    \"recipient\": \"fiend\",\r\n    \"amount\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6000/mine",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"mine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/nodes/register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nodes\": [\"http://localhost:6000\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6000/nodes/register",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"nodes",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/nodes/resolve",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"sender\": \"alireza\", \r\n    \"recipient\": \"fiend\",\r\n    \"amount\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6000/nodes/resolve",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"nodes",
+								"resolve"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "port:6001",
+			"item": [
+				{
+					"name": "/chain",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:6001/chain",
+							"host": [
+								"localhost"
+							],
+							"port": "6001",
+							"path": [
+								"chain"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/trxs/new",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"sender\": \"alireza\", \r\n    \"recipient\": \"friend\",\r\n    \"amount\": 30\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6001/trxs/new",
+							"host": [
+								"localhost"
+							],
+							"port": "6001",
+							"path": [
+								"trxs",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/mine",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"sender\": \"alireza\", \r\n    \"recipient\": \"fiend\",\r\n    \"amount\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6001/mine",
+							"host": [
+								"localhost"
+							],
+							"port": "6001",
+							"path": [
+								"mine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/nodes/register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nodes\": [\"http://localhost:6000\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6001/nodes/register",
+							"host": [
+								"localhost"
+							],
+							"port": "6001",
+							"path": [
+								"nodes",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/nodes/resolve",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"sender\": \"alireza\", \r\n    \"recipient\": \"fiend\",\r\n    \"amount\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6001/nodes/resolve",
+							"host": [
+								"localhost"
+							],
+							"port": "6001",
+							"path": [
+								"nodes",
+								"resolve"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
