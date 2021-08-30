@@ -54,17 +54,17 @@ class BlockChain:
     def valid_proof(nonce, block):
         """checks the hash of the passed nonce and block
         to see it is less than the DL or not"""
-        proof = f'{nonce}{json.dumps(block, sort_keys=True).encode()}'
+        proof = f'{nonce}{json.dumps(block, sort_keys=True).encode()}'.encode()
         proof_hash = sha256(proof).hexdigest()
 
         return proof_hash[:4] == '0000'
 
         pass
 
-    def proof_of_work(self):
+    def proof_of_work(self, last_block):
         """shows that enough try has been done or not"""
         nonce = 0
-        while self.valid_proof(nonce, self.chain[-1]) is False:
+        while self.valid_proof(nonce, last_block) is False:
             nonce += 1
 
         return nonce
@@ -78,7 +78,31 @@ blockchain = BlockChain()
 @app.route('/mine')
 def mine():
     """mine a block and after that add it to the blockchain"""
-    return "I will mine a block soon!"
+    # find the new nonce by running the proof of work function
+    last_block = blockchain.last_block
+    proof_of_work = blockchain.proof_of_work(last_block)
+
+    # after finding the nonce we will get a prize
+    blockchain.new_trx(
+        sender=0,
+        recipient=node_id,
+        amount=50
+    )
+
+    # now we make a new block
+    previous_hash = blockchain.hash(last_block)
+    new_block = blockchain.new_block(proof_of_work, previous_hash)
+
+    res = {
+        'message': "new block made",
+        'index': new_block['index'],
+        'trxs': new_block['trxs'],
+        'proof': new_block['proof'],
+        'previous_hash': new_block['previous_hash']
+
+    }
+
+    return jsonify(res), 200
 
 
 @app.route('/trxs/new', methods=['POST'])
