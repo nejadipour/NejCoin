@@ -181,5 +181,39 @@ def get_full_chain():
     return jsonify(output), 200
 
 
+@app.route('/nodes/register', methods=['POST'])
+def register_node():
+    passed_data = request.get_json()
+
+    nodes = passed_data.get('nodes')
+    for node in nodes:
+        blockchain.register_node(node)
+
+    response = {
+        'message': 'nodes added',
+        'total_nodes': list(blockchain.nodes)
+    }
+
+    return jsonify(response), 201
+
+
+@app.route('/nodes/resolve')
+def consensus():
+    replaced = blockchain.resolve_conflicts()
+
+    if replaced:
+        response = {
+            'message': 'replaced!',
+            'new_chain': blockchain.chain
+        }
+    else:
+        response = {
+            'message': 'I am the best!',
+            'chain': blockchain.chain
+        }
+
+    return jsonify(response), 200
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(sys.argv[1]))
