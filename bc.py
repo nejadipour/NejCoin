@@ -15,7 +15,7 @@ class BlockChain:
         self.current_trxs = []
         self.new_block(100, 1)
 
-    def new_block(self, proof, previous_hash=None):
+    def new_block(self, proof=None, previous_hash=None):
         """create a new block"""
         block = {
             "index": len(self.chain),
@@ -25,8 +25,9 @@ class BlockChain:
             "previous_hash": previous_hash or self.hash(self.chain[-1])
         }
 
-        self.chain.append(block)
-        self.current_trxs = []
+        if proof:
+            self.chain.append(block)
+            self.current_trxs = []
 
         return block
 
@@ -54,7 +55,7 @@ class BlockChain:
 
     def valid_chain(self, chain):
         """checks the validity of the chain"""
-        index = 0
+        index = 1  # we start from the block by index 1, because the values of first block are defined manually
         while index < len(chain) - 1:
             the_block_before = chain[index]
             current_block = chain[index + 1]
@@ -62,14 +63,15 @@ class BlockChain:
             if self.hash(the_block_before) != current_block['previous_hash']:
                 return False
 
-            if not self.valid_proof(the_block_before['proof'], the_block_before):
+            if not self.valid_proof(the_block_before):
                 return False
 
             index += 1
 
         last_block = chain[-1]
-        if not self.valid_proof(last_block['proof'], last_block):
-            return False
+        if last_block['index'] != 0:
+            if not self.valid_proof(last_block):
+                return False
 
         return True
 
@@ -102,21 +104,22 @@ class BlockChain:
         return self.chain[-1]
 
     @staticmethod
-    def valid_proof(nonce, block):
+    def valid_proof(block):
         """checks the hash of the passed nonce and block
         to see it is less than the DL or not"""
-        proof = f'{nonce}{json.dumps(block, sort_keys=True).encode()}'.encode()
+        proof = f'{json.dumps(block, sort_keys=True).encode()}'.encode()
         proof_hash = sha256(proof).hexdigest()
 
         return proof_hash[:4] == '0000'
 
-        pass
-
     def proof_of_work(self, last_block):
         """shows that enough try has been done or not"""
         nonce = 0
-        while self.valid_proof(nonce, last_block) is False:
+        last_block['proof'] = nonce
+
+        while self.valid_proof(last_block) is False:
             nonce += 1
+            last_block['proof'] = nonce
 
         return nonce
 
@@ -131,9 +134,8 @@ def mine():
     """mine a block and after that add it to the blockchain"""
     # find the new nonce by running the proof of work function
     last_block = blockchain.last_block
-    proof_of_work = blockchain.proof_of_work(last_block)
 
-    # after finding the nonce we will get a prize
+    # if we find the nonce we will get a prize
     blockchain.new_trx(
         sender=0,
         recipient=node_id,
@@ -142,7 +144,10 @@ def mine():
 
     # now we make a new block
     previous_hash = blockchain.hash(last_block)
-    new_block = blockchain.new_block(proof_of_work, previous_hash)
+    new_block = blockchain.new_block(proof=None, previous_hash=previous_hash)
+    proof_of_work = blockchain.proof_of_work(new_block)
+    new_block['proof'] = proof_of_work
+    blockchain.chain.append(new_block)
 
     res = {
         'message': "new block made",
